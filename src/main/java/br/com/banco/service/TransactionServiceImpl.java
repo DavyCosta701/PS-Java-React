@@ -5,45 +5,47 @@ import br.com.banco.DTO.TransactionsDTO;
 import br.com.banco.domain.entity.TransactionEntity;
 import br.com.banco.domain.repository.TransactionRepository;
 import br.com.banco.exception.DateException;
-import br.com.banco.exception.TransactionException;
-import br.com.banco.util.TransactionHelper;
+import br.com.banco.exception.TransacaoException;
+import br.com.banco.helper.TransactionHelper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class TransactionServiceImpl implements TransactionService {
 
-    private final TransactionRepository transactionRepository;
-    private final TransactionHelper transactionHelper;
+     final TransactionRepository transactionRepository;
+     final TransactionHelper transactionHelper;
 
     @Override
-    public TransactionsDTO searchFilter(SearchTransactionDTO searchTransactionDTO) throws Exception {
-        if (searchTransactionDTO.getDataInicial() != null &&
-                searchTransactionDTO.getDataFinal()!= null &&
-                searchTransactionDTO.getNomeOperador() == null) {
+    public TransactionsDTO searchFilter(SearchTransactionDTO searchTransactionDTO) {
+
+        if (!Objects.equals(searchTransactionDTO.getDataInicial(), "") &&
+                !Objects.equals(searchTransactionDTO.getDataFinal(), "") &&
+                Objects.equals(searchTransactionDTO.getNomeOperador(), "")) {
             LocalDate dataInicio = LocalDate.parse(searchTransactionDTO.getDataInicial(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             LocalDate dataFim = LocalDate.parse(searchTransactionDTO.getDataFinal(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-            if (dataInicio.isAfter(dataFim)){
-                throw new DateException("Data de inicio não pode ser depois de data final.") {
-                };
-            }
             return findByDate(dataInicio,dataFim);
 
-        }else if (searchTransactionDTO.getNomeOperador() != null &&
-                searchTransactionDTO.getDataInicial() != null &&
-                 searchTransactionDTO.getDataFinal() != null
+        }else if (!Objects.equals(searchTransactionDTO.getNomeOperador(), "") &&
+                !Objects.equals(searchTransactionDTO.getDataInicial(), "") &&
+                !Objects.equals(searchTransactionDTO.getDataFinal(), "")
                 ) {
             LocalDate dataInicio = LocalDate.parse(searchTransactionDTO.getDataInicial(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             LocalDate dataFim = LocalDate.parse(searchTransactionDTO.getDataFinal(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
             return findByDateName(dataInicio, dataFim, searchTransactionDTO.getNomeOperador());
+        } else if (!Objects.equals(searchTransactionDTO.getNomeOperador(), "") &&
+                Objects.equals(searchTransactionDTO.getDataInicial(), "") &&
+                Objects.equals(searchTransactionDTO.getDataFinal(), "")
+        ) {
+            return findByName(searchTransactionDTO.getNomeOperador());
         }
         return findAll();
     }
@@ -83,12 +85,12 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     private TransactionsDTO getTransactionsDTO(List<TransactionEntity> listTransaction) {
+        if (listTransaction.isEmpty()){
+            throw new TransacaoException("Sem transações disponíveis");
+        }
+
         BigDecimal saldoTotal = transactionHelper.calculateSaldoTotal();
         BigDecimal saldoPeriodo = transactionHelper.calculateSaldoPeriodo(listTransaction);
-
-        if (listTransaction.isEmpty()){
-            throw new TransactionException("Sem transações disponíveis");
-        }
 
         return TransactionsDTO
                 .builder()

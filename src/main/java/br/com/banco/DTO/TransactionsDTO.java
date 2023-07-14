@@ -1,10 +1,7 @@
 package br.com.banco.DTO;
 
 import br.com.banco.domain.entity.TransactionEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -13,6 +10,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Data
+@Getter
+@Setter
 public class TransactionsDTO {
 
     List<TransactionEntity> transactions;

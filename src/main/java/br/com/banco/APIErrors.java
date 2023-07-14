@@ -10,11 +10,9 @@ public class APIErrors {
 
     @Getter
     private final List<String> errors;
-
     public APIErrors(List<String> errors) {
         this.errors = errors;
     }
-
     public APIErrors(String message) {
         this.errors = Collections.singletonList(message);
     }

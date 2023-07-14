@@ -1,10 +1,8 @@
-package br.com.banco.util;
+package br.com.banco.helper;
 
 import br.com.banco.domain.entity.TransactionEntity;
 import br.com.banco.domain.repository.TransactionRepository;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.UtilityClass;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
