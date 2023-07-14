@@ -1,5 +1,8 @@
 package br.com.banco.service.filterService;
 
-public class FilterService {
+import br.com.banco.DTO.SearchTransactionDTO;
+import br.com.banco.DTO.TransactionsDTO;
 
+public interface FilterService {
+    TransactionsDTO filterSearch(SearchTransactionDTO searchTransactionDTO);
 }

@@ -7,47 +7,39 @@ import br.com.banco.domain.repository.TransactionRepository;
 import br.com.banco.exception.DateException;
 import br.com.banco.exception.TransacaoException;
 import br.com.banco.helper.TransactionHelper;
-import lombok.RequiredArgsConstructor;
+import br.com.banco.service.filterService.DateFilter;
+import br.com.banco.service.filterService.DateNameFilter;
+import br.com.banco.service.filterService.FilterService;
+import br.com.banco.service.filterService.NameFilter;
 import org.springframework.stereotype.Service;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 
 @Service
-@RequiredArgsConstructor
+
 public class TransactionServiceImpl implements TransactionService {
 
-     final TransactionRepository transactionRepository;
-     final TransactionHelper transactionHelper;
+    private final TransactionRepository transactionRepository;
+    private final TransactionHelper transactionHelper;
+    public TransactionServiceImpl(TransactionRepository transactionRepository, TransactionHelper transactionHelper) {
+        this.transactionRepository = transactionRepository;
+        this.transactionHelper = transactionHelper;
+
+    }
+
+     private FilterService buildFilterChain(){
+        FilterService dateFilter = new DateFilter(this, null);
+        FilterService nameFilter = new NameFilter(dateFilter, this);
+         return new DateNameFilter(nameFilter, this);
+     }
 
     @Override
     public TransactionsDTO searchFilter(SearchTransactionDTO searchTransactionDTO) {
+        FilterService filterChain = buildFilterChain();
 
-        if (!Objects.equals(searchTransactionDTO.getDataInicial(), "") &&
-                !Objects.equals(searchTransactionDTO.getDataFinal(), "") &&
-                Objects.equals(searchTransactionDTO.getNomeOperador(), "")) {
-            LocalDate dataInicio = LocalDate.parse(searchTransactionDTO.getDataInicial(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            LocalDate dataFim = LocalDate.parse(searchTransactionDTO.getDataFinal(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-            return findByDate(dataInicio,dataFim);
-
-        }else if (!Objects.equals(searchTransactionDTO.getNomeOperador(), "") &&
-                !Objects.equals(searchTransactionDTO.getDataInicial(), "") &&
-                !Objects.equals(searchTransactionDTO.getDataFinal(), "")
-                ) {
-            LocalDate dataInicio = LocalDate.parse(searchTransactionDTO.getDataInicial(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            LocalDate dataFim = LocalDate.parse(searchTransactionDTO.getDataFinal(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-            return findByDateName(dataInicio, dataFim, searchTransactionDTO.getNomeOperador());
-        } else if (!Objects.equals(searchTransactionDTO.getNomeOperador(), "") &&
-                Objects.equals(searchTransactionDTO.getDataInicial(), "") &&
-                Objects.equals(searchTransactionDTO.getDataFinal(), "")
-        ) {
-            return findByName(searchTransactionDTO.getNomeOperador());
-        }
-        return findAll();
+        return filterChain.filterSearch(searchTransactionDTO);
     }
 
     @Override

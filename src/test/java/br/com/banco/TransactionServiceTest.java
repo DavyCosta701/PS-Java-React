@@ -1,8 +1,6 @@
 package br.com.banco;
 
 import br.com.banco.DTO.SearchTransactionDTO;
-import br.com.banco.domain.repository.ContaRepository;
-import br.com.banco.domain.repository.TransactionRepository;
 import br.com.banco.service.TransactionServiceImpl;
 import lombok.NoArgsConstructor;
 import org.junit.Test;
@@ -35,7 +33,7 @@ public class TransactionServiceTest {
     }
 
     @Test
-    public void searchAll_DeveBuscaTodos(){
+                                                                                                                                                                         public void searchAll_DeveBuscaTodos(){
         System.out.println(transactionService.findAll());
     }
 
@@ -44,6 +42,49 @@ public class TransactionServiceTest {
         LocalDate dataInicio = LocalDate.parse("2020-06-08", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         LocalDate dataFim = LocalDate.parse("2021-04-01", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         System.out.println(transactionService.findByDateName(dataInicio, dataFim, "Beltrano"));
+    }
+
+    @Test
+    public void searchFilter_SemFiltro(){
+        SearchTransactionDTO searchTransactionDTO = SearchTransactionDTO.builder()
+                .nomeOperador("")
+                .dataFinal("")
+                .dataInicial("")
+                .build();
+        System.out.println(transactionService.searchFilter(searchTransactionDTO));
+
+    }
+
+    @Test
+    public void searchFilter_DeveUtilizarFiltroNome(){
+        SearchTransactionDTO searchTransactionDTO = SearchTransactionDTO.builder()
+                .nomeOperador("Beltrano")
+                .dataFinal("")
+                .dataInicial("")
+                .build();
+        System.out.println(transactionService.searchFilter(searchTransactionDTO));
+
+    }
+    @Test
+    public void searchFilter_DeveUtilizarFiltroData(){
+        SearchTransactionDTO searchTransactionDTO = SearchTransactionDTO.builder()
+                .nomeOperador("")
+                .dataFinal("2019-01-01")
+                .dataInicial("2022-01-01")
+                .build();
+        System.out.println(transactionService.searchFilter(searchTransactionDTO));
+
+    }
+
+    @Test
+    public void searchFilter_DeveUtilizarTodosFiltros(){
+        SearchTransactionDTO searchTransactionDTO = SearchTransactionDTO.builder()
+                .nomeOperador("Beltrano")
+                .dataFinal("2022-01-01")
+                .dataInicial("2019-01-01")
+                .build();
+        System.out.println(transactionService.searchFilter(searchTransactionDTO));
+
     }
 
 
