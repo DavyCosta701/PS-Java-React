@@ -2,7 +2,7 @@ package br.com.banco.service.filterService;
 
 import br.com.banco.DTO.SearchTransactionDTO;
 import br.com.banco.DTO.TransactionsDTO;
-import br.com.banco.service.TransactionServiceImpl;
+import br.com.banco.service.transactionService.TransactionServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 

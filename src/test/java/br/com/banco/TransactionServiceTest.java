@@ -1,7 +1,7 @@
 package br.com.banco;
 
 import br.com.banco.DTO.SearchTransactionDTO;
-import br.com.banco.service.TransactionServiceImpl;
+import br.com.banco.service.transactionService.TransactionServiceImpl;
 import lombok.NoArgsConstructor;
 import org.junit.Test;
 import org.junit.runner.RunWith;

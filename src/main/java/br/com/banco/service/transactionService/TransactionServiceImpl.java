@@ -1,4 +1,4 @@
-package br.com.banco.service;
+package br.com.banco.service.transactionService;
 
 import br.com.banco.DTO.SearchTransactionDTO;
 import br.com.banco.DTO.TransactionsDTO;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @Service
@@ -61,13 +62,15 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public TransactionsDTO findByDateName(LocalDate dataInicial, LocalDate dataFinal, String operador) {
-        if (dataInicial.isAfter(dataFinal)){
+
+        if (dataInicial.isAfter(dataFinal)) {
             throw new DateException("Data de inicio não pode ser depois de data final.");
         }
         List<TransactionEntity> listTransaction = transactionRepository.findByDataTransferenciaBetweenAndOperadorLike(
                 dataInicial, dataFinal, operador
         );
         return getTransactionsDTO(listTransaction);
+
     }
 
     @Override

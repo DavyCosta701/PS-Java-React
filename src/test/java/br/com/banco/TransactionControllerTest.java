@@ -2,7 +2,7 @@ package br.com.banco;
 
 import br.com.banco.DTO.SearchTransactionDTO;
 import br.com.banco.controller.TransactionController;
-import br.com.banco.service.TransactionServiceImpl;
+import br.com.banco.service.transactionService.TransactionServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.NoArgsConstructor;
 import org.junit.Test;
@@ -42,10 +42,37 @@ public class TransactionControllerTest {
                         .content(objectMapper.writeValueAsString(searchTransactionDTO)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andDo(MockMvcResultHandlers.print());
-
-
     }
 
+    @Test
+    public void testApi_DeveRetornarValoresComDataEspecificada() throws Exception {
+        SearchTransactionDTO searchTransactionDTO = SearchTransactionDTO.builder()
+                .nomeOperador("")
+                .dataInicial("2019-01-01")
+                .dataFinal("2021-01-01")
+                .build();
+        mvc.perform( MockMvcRequestBuilders
+                        .post("/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(searchTransactionDTO)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    public void testApi_DeveRetornarValoresComDataENomeEspecificados() throws Exception {
+        SearchTransactionDTO searchTransactionDTO = SearchTransactionDTO.builder()
+                .nomeOperador("Beltrano")
+                .dataInicial("2019-01-01")
+                .dataFinal("2021-01-01")
+                .build();
+        mvc.perform( MockMvcRequestBuilders
+                        .post("/")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(searchTransactionDTO)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
 
 
 }
