@@ -4,6 +4,8 @@ import br.com.banco.DTO.SearchTransactionDTO;
 import br.com.banco.DTO.TransactionsDTO;
 import br.com.banco.service.transactionService.TransactionServiceImpl;
 import lombok.AllArgsConstructor;
+import netscape.javascript.JSObject;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,13 +16,10 @@ public class TransactionController {
 
     private final TransactionServiceImpl transactionService;
 
-    @GetMapping("/")
+    @PostMapping("/")
     @ResponseStatus(HttpStatus.OK)
     @CrossOrigin(origins = "http://localhost:3000")
-    public TransactionsDTO buscaTransacao(@RequestParam(value = "data_inicio",required = false) String dataInicio,
-                                          @RequestParam(value = "data_fim",required = false) String dataFim,
-                                          @RequestParam(value = "operador",required = false) String operador){
-        SearchTransactionDTO searchTransactionDTO = new SearchTransactionDTO(dataInicio, dataFim, operador);
+    public TransactionsDTO buscaTransacao(@RequestBody SearchTransactionDTO searchTransactionDTO) {
         return transactionService.searchFilter(searchTransactionDTO);
     }
 

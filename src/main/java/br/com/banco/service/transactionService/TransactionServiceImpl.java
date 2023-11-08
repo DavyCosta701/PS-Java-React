@@ -30,11 +30,11 @@ public class TransactionServiceImpl implements TransactionService {
 
     }
 
-     private FilterService buildFilterChain(){
+    private FilterService buildFilterChain(){
         FilterService dateFilter = new DateFilter(this, null);
         FilterService nameFilter = new NameFilter(dateFilter, this);
-         return new DateNameFilter(nameFilter, this);
-     }
+        return new DateNameFilter(nameFilter, this);
+    }
 
     @Override
     public TransactionsDTO searchFilter(SearchTransactionDTO searchTransactionDTO) {
