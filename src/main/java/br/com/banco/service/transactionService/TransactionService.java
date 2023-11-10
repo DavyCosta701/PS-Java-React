@@ -1,5 +1,6 @@
 package br.com.banco.service.transactionService;
 
+import br.com.banco.DTO.NewTransactionDTO;
 import br.com.banco.DTO.SearchTransactionDTO;
 import br.com.banco.DTO.TransactionsDTO;
 
@@ -12,5 +13,6 @@ public interface TransactionService {
     public TransactionsDTO findByName(String nome);
     public TransactionsDTO findByDateName(LocalDate dataInicial, LocalDate dataFinal, String operador);
     public TransactionsDTO findAll();
+    public void makeTransaction(NewTransactionDTO newTransactionDTO);
 
 }

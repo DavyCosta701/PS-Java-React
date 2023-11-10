@@ -1,8 +1,11 @@
 package br.com.banco.service.transactionService;
 
+import br.com.banco.DTO.NewTransactionDTO;
 import br.com.banco.DTO.SearchTransactionDTO;
 import br.com.banco.DTO.TransactionsDTO;
+import br.com.banco.domain.entity.ContaEntity;
 import br.com.banco.domain.entity.TransactionEntity;
+import br.com.banco.domain.repository.ContaRepository;
 import br.com.banco.domain.repository.TransactionRepository;
 import br.com.banco.exception.DateException;
 import br.com.banco.exception.TransacaoException;
@@ -11,12 +14,16 @@ import br.com.banco.service.filterService.DateFilter;
 import br.com.banco.service.filterService.DateNameFilter;
 import br.com.banco.service.filterService.FilterService;
 import br.com.banco.service.filterService.NameFilter;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.Optional;
+
+import static java.math.BigDecimal.valueOf;
 
 @Service
 
@@ -24,10 +31,12 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final TransactionHelper transactionHelper;
-    public TransactionServiceImpl(TransactionRepository transactionRepository, TransactionHelper transactionHelper) {
+    private final ContaRepository contaRepository;
+    public TransactionServiceImpl(TransactionRepository transactionRepository, TransactionHelper transactionHelper, ContaRepository contaRepository) {
         this.transactionRepository = transactionRepository;
         this.transactionHelper = transactionHelper;
 
+        this.contaRepository = contaRepository;
     }
 
     private FilterService buildFilterChain(){
@@ -93,6 +102,24 @@ public class TransactionServiceImpl implements TransactionService {
                 .saldoPeriodo(saldoPeriodo)
                 .saldoTotal(saldoTotal)
                 .build();
+    }
+
+    public void makeTransaction(NewTransactionDTO newTransactionDTO){
+        ContaEntity conta = contaRepository.findById(newTransactionDTO.getNumeroConta())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não Encontrado!"));
+
+        if (newTransactionDTO.getValorTransacao().compareTo(BigDecimal.ZERO) > 0){
+            transactionRepository.save(
+                    new TransactionEntity(1, LocalDate.now(), newTransactionDTO.getValorTransacao(), "DEPOSITO", conta.getNome(),conta.getId(), conta)
+            );
+        }
+
+        else {
+            transactionRepository.save(
+                    new TransactionEntity(LocalDate.now(), newTransactionDTO.getValorTransacao(), "SAQUE", conta.getNome(),conta.getId(), conta)
+            );
+        }
+
     }
 
     

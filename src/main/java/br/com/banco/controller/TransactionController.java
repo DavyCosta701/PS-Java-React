@@ -1,5 +1,6 @@
 package br.com.banco.controller;
 
+import br.com.banco.DTO.NewTransactionDTO;
 import br.com.banco.DTO.SearchTransactionDTO;
 import br.com.banco.DTO.TransactionsDTO;
 import br.com.banco.service.transactionService.TransactionServiceImpl;
@@ -21,6 +22,14 @@ public class TransactionController {
     @CrossOrigin(origins = "http://localhost:3000")
     public TransactionsDTO buscaTransacao(@RequestBody SearchTransactionDTO searchTransactionDTO) {
         return transactionService.searchFilter(searchTransactionDTO);
+    }
+
+    @PostMapping("/transacao")
+    @ResponseStatus(HttpStatus.OK)
+    @CrossOrigin(origins = "http://localhost:3000")
+    public String novaTransacao(@RequestBody NewTransactionDTO newTransactionDTO) {
+        transactionService.makeTransaction(newTransactionDTO);
+        return "Transaction OK";
     }
 
 }

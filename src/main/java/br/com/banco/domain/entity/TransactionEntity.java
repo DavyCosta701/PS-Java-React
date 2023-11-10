@@ -26,8 +26,18 @@ public class TransactionEntity {
     private String tipoTransferencia;
     @Column(name= "nome_operador_transacao")
     private String operador;
+    @Column(name= "conta_id")
+    private int conta_id;
     @ManyToOne
     @JoinColumn(name = "FK_CONTA")
     private ContaEntity conta;
 
+    public TransactionEntity(LocalDate dataTransferencia, BigDecimal valorTransferencia, String tipoTransferencia, String operador, int conta_id, ContaEntity conta) {
+        this.dataTransferencia = dataTransferencia;
+        this.valorTransferencia = valorTransferencia;
+        this.tipoTransferencia = tipoTransferencia;
+        this.operador = operador;
+        this.conta_id = conta_id;
+        this.conta = conta;
+    }
 }
