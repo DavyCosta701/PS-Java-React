@@ -1,6 +1,3 @@
-# Processo Seletivo Java
-
-
 ## Como executar a aplicação 
 
 
